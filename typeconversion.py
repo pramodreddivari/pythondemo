@@ -1,0 +1,9 @@
+a=10
+b=20.0
+c="Hello"
+x=float(a)
+y=int(b)
+z=str(c)
+print(x)
+print(y)
+print(z)
