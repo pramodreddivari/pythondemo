@@ -18,6 +18,11 @@ x = thisdict["model"]
 x = thisdict.keys()
 x = thisdict.values()
 
+
+
+
+
+
 thisdict = {
   "brand": "Ford",
   "model": "Mustang",
