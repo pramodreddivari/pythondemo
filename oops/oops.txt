@@ -1,0 +1,290 @@
+# Complete Python OOP Guide: From Beginner to Advanced
+
+## Table of Contents
+1. [What is OOP?](#what-is-oop)
+2. [Classes and Objects](#classes-and-objects)
+3. [Attributes and Methods](#attributes-and-methods)
+4. [The __init__ Method (Constructor)](#the-init-method-constructor)
+5. [Instance vs Class Attributes](#instance-vs-class-attributes)
+6. [Instance vs Class Methods](#instance-vs-class-methods)
+7. [Encapsulation](#encapsulation)
+8. [Inheritance](#inheritance)
+9. [Method Overriding](#method-overriding)
+10. [Polymorphism](#polymorphism)
+11. [Abstraction](#abstraction)
+12. [Special Methods (Magic Methods)](#special-methods-magic-methods)
+13. [Property Decorators](#property-decorators)
+14. [Static Methods](#static-methods)
+15. [Multiple Inheritance](#multiple-inheritance)
+16. [Method Resolution Order (MRO)](#method-resolution-order-mro)
+17. [Composition vs Inheritance](#composition-vs-inheritance)
+18. [Advanced Concepts](#advanced-concepts)
+
+---
+
+## What is OOP?
+
+Object-Oriented Programming (OOP) is a programming paradigm that uses "objects" to design applications. It's based on four main principles:
+
+- **Encapsulation**: Bundling data and methods together
+- **Inheritance**: Creating new classes based on existing ones
+- **Polymorphism**: Using one interface for different data types
+- **Abstraction**: Hiding complex implementation details
+
+---
+
+## Classes and Objects
+
+### What is a Class?
+A class is a blueprint or template for creating objects. It defines what attributes and methods objects will have.
+
+### What is an Object?
+An object is an instance of a class. It's the actual entity created from the class blueprint.
+
+```python
+# Define a class
+class Car:
+    pass  # Empty class for now
+
+# Create objects (instances)
+car1 = Car()
+car2 = Car()
+
+print(type(car1))  # <class '__main__.Car'>
+print(car1)        # <__main__.Car object at 0x...>
+```
+
+---
+
+## Attributes and Methods
+
+### Attributes
+Attributes are variables that belong to a class or object.
+
+### Methods
+Methods are functions that belong to a class and operate on objects.
+
+```python
+class Dog:
+    # Class attribute (shared by all instances)
+    species = "Canis lupus"
+    
+    # Instance method
+    def bark(self):
+        return "Woof!"
+    
+    def info(self):
+        return f"This is a {self.species}"
+
+# Create objects
+dog1 = Dog()
+dog2 = Dog()
+
+# Access class attribute
+print(dog1.species)  # Canis lupus
+print(dog2.species)  # Canis lupus
+
+# Call methods
+print(dog1.bark())   # Woof!
+print(dog1.info())   # This is a Canis lupus
+```
+
+---
+
+## The __init__ Method (Constructor)
+
+The `__init__` method is called when an object is created. It's used to initialize the object's attributes.
+
+```python
+class Person:
+    def __init__(self, name, age):
+        self.name = name    # Instance attribute
+        self.age = age      # Instance attribute
+    
+    def introduce(self):
+        return f"Hi, I'm {self.name} and I'm {self.age} years old"
+    
+    def have_birthday(self):
+        self.age += 1
+        return f"Happy birthday! Now I'm {self.age}"
+
+# Create objects with initial values
+person1 = Person("Alice", 25)
+person2 = Person("Bob", 30)
+
+print(person1.introduce())  # Hi, I'm Alice and I'm 25 years old
+print(person2.introduce())  # Hi, I'm Bob and I'm 30 years old
+
+# Modify object state
+print(person1.have_birthday())  # Happy birthday! Now I'm 26
+```
+
+---
+
+## Instance vs Class Attributes
+
+```python
+class Student:
+    # Class attribute (shared by all instances)
+    school_name = "Python High School"
+    total_students = 0
+    
+    def __init__(self, name, grade):
+        # Instance attributes (unique to each instance)
+        self.name = name
+        self.grade = grade
+        Student.total_students += 1  # Modify class attribute
+    
+    def study(self):
+        return f"{self.name} is studying"
+
+# Create students
+student1 = Student("Emma", "A")
+student2 = Student("John", "B")
+
+# Access instance attributes
+print(student1.name)        # Emma
+print(student2.name)        # John
+
+# Access class attributes
+print(student1.school_name) # Python High School
+print(Student.school_name)  # Python High School
+print(Student.total_students) # 2
+
+# Modify class attribute
+Student.school_name = "Advanced Python Academy"
+print(student1.school_name) # Advanced Python Academy
+print(student2.school_name) # Advanced Python Academy
+```
+
+---
+
+## Instance vs Class Methods
+
+```python
+class Calculator:
+    calculation_count = 0
+    
+    def __init__(self, name):
+        self.name = name
+    
+    # Instance method (needs self)
+    def add(self, a, b):
+        Calculator.calculation_count += 1
+        result = a + b
+        print(f"{self.name} calculated: {a} + {b} = {result}")
+        return result
+    
+    # Class method (needs cls, works with class)
+    @classmethod
+    def get_calculation_count(cls):
+        return f"Total calculations performed: {cls.calculation_count}"
+    
+    @classmethod
+    def create_basic_calculator(cls):
+        return cls("Basic Calculator")
+
+# Using instance methods
+calc1 = Calculator("My Calculator")
+calc1.add(5, 3)  # My Calculator calculated: 5 + 3 = 8
+
+# Using class methods
+print(Calculator.get_calculation_count())  # Total calculations performed: 1
+
+# Create object using class method
+calc2 = Calculator.create_basic_calculator()
+calc2.add(10, 20)  # Basic Calculator calculated: 10 + 20 = 30
+
+print(Calculator.get_calculation_count())  # Total calculations performed: 2
+```
+
+---
+
+## Encapsulation
+
+Encapsulation is about bundling data and methods together and controlling access to them.
+
+### Public, Protected, and Private Attributes
+
+```python
+class BankAccount:
+    def __init__(self, account_number, initial_balance):
+        self.account_number = account_number      # Public
+        self._balance = initial_balance           # Protected (convention)
+        self.__pin = 1234                        # Private (name mangling)
+    
+    # Public method
+    def get_balance(self):
+        return self._balance
+    
+    # Public method to access private data safely
+    def withdraw(self, amount, pin):
+        if pin != self.__pin:
+            return "Invalid PIN"
+        if amount > self._balance:
+            return "Insufficient funds"
+        self._balance -= amount
+        return f"Withdrew ${amount}. Balance: ${self._balance}"
+    
+    def deposit(self, amount):
+        if amount > 0:
+            self._balance += amount
+            return f"Deposited ${amount}. Balance: ${self._balance}"
+        return "Invalid amount"
+    
+    # Private method
+    def __validate_transaction(self, amount):
+        return amount > 0 and amount <= self._balance
+
+# Create account
+account = BankAccount("12345", 1000)
+
+# Access public attribute
+print(account.account_number)  # 12345
+
+# Access protected attribute (not recommended but possible)
+print(account._balance)        # 1000
+
+# Try to access private attribute (won't work directly)
+# print(account.__pin)         # AttributeError
+
+# Access private attribute using name mangling (not recommended)
+print(account._BankAccount__pin)  # 1234
+
+# Use public methods
+print(account.deposit(500))     # Deposited $500. Balance: $1500
+print(account.withdraw(200, 1234))  # Withdrew $200. Balance: $1300
+print(account.withdraw(200, 9999))  # Invalid PIN
+```
+
+---
+
+## Inheritance
+
+Inheritance allows a class to inherit attributes and methods from another class.
+
+```python
+# Parent class (Base class)
+class Animal:
+    def __init__(self, name, species):
+        self.name = name
+        self.species = species
+        self.is_alive = True
+    
+    def eat(self):
+        return f"{self.name} is eating"
+    
+    def sleep(self):
+        return f"{self.name} is sleeping"
+    
+    def make_sound(self):
+        return f"{self.name} makes a sound"
+
+# Child class (Derived class)
+class Dog(Animal):
+    def __init__(self, name, breed):
+        super().__init__(name, "Dog")  # Call parent constructor
+        self.breed = breed
+    
+    def make_sound(self):  # Override parent method
+        return f"{self.name} barks: Woof!"
